@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'yahoo/css/interface.css' %}">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+    <script
+      src="https://code.jquery.com/jquery-3.3.0.min.js"
+      integrity="sha256-RTQy8VOmNlT6b2PIRur37p6JEBZUE7o8wPgMvu18MC4="
+      crossorigin="anonymous">
+    </script>
+
+  </head>
+  <body>
+
+    <script>
+
+      $(document).ready(function() {
+
+        const wrapper = document.querySelector(".input-wrapper"),
+              textInput = document.querySelector("input[type='text']");
+
+        textInput.addEventListener("keyup", event => {
+          wrapper.setAttribute("data-text", event.target.value);
+        });
+
+        function createTable(tableData) {
+          var table = document.createElement('table');
+          var tableBody = document.createElement('tbody');
+
+          tableData.forEach(function(rowData) {
+            var row = document.createElement('tr');
+
+            rowData.forEach(function(cellData) {
+              var cell = document.createElement('td');
+              cell.appendChild(document.createTextNode(cellData));
+              row.appendChild(cell);
+            });
+
+            tableBody.appendChild(row);
+          });
+
+          table.appendChild(tableBody);
+          document.body.appendChild(table);
+        }
+
+        $(".submit").click(function(e) {
+          e.preventDefault();
+
+          $(".submit").addClass("loading");
+          setTimeout(function() {
+            $(".submit").addClass("hide-loading");
+            // For failed icon just replace ".done" with ".failed"
+            $(".done").addClass("finish");
+          }, 3000);
+          setTimeout(function() {
+            $(".submit").removeClass("loading");
+            $(".submit").removeClass("hide-loading");
+            $(".done").removeClass("finish");
+            $(".failed").removeClass("finish");
+          }, 5000);
+
+          $.ajax({
+            type:'POST',
+            url:'query',
+            data:{
+              query: $('#query').attr('data-text'),
+              csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+            },
+            success:function(res){
+                var data = res
+                createTable(data)
+            }
+
+          })
+
+
+        })
+      });
+    </script>
+
+    <h1>Please Enter Your SQLite3 Query</h1>
+
+    <form id="input">{% csrf_token %}
+      <div id="query" class="input-wrapper" data-text="">
+        <input type="text" placeholder="SELECT * FROM yahoo_category">
+      </div>
+    </form>
+
+    <div class="container-fluid row ">
+      <div class="container">
+        <div class="row">
+          <div class="col-xs-12 button-holder">
+            <div class="ajax-button">
+              <div class="fa fa-check done"></div>
+              <div class="fa fa-close failed"></div>
+              <input id="submit" class="submit" type="button" value="Submit" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </body>
+</html>
