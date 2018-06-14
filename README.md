@@ -9,10 +9,11 @@ python manage.py migrate
 
 ```
 
+# Crawler
+
 Set how many category you want to crawl in yahoo_crawler.py
 default is 5
 
-# Crawler
 ```python
 
 python yahoo_crawler.py
