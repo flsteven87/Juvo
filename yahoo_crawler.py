@@ -51,7 +51,7 @@ def crawl_category_list():
 
 
 df_category = crawl_category_list()
-print(df_category.head())
+print('測試 category crawler')
 
 
 # In[ ]:
@@ -60,7 +60,7 @@ print(df_category.head())
 df_category.to_sql('yahoo_category', con=engine, if_exists='append', index=False)
 cur = engine.cursor()
 cur.execute('SELECT * FROM yahoo_category;').fetchall()
-print('category_list has been crawled')
+print('產品類別清單已爬取')
 
 # In[ ]:
 
@@ -91,7 +91,7 @@ def crawl_product_list(category_url):
 
 
 product_list = crawl_product_list(df_category.loc[1]['url'])
-print(product_list[0])
+print('測試單一類別產品清單crawler')
 
 
 # In[ ]:
@@ -122,7 +122,7 @@ def crawl_product(product_url,category,position):
 
 
 product = crawl_product(product_list[0],df_category.loc[1]['category'],0)
-print(product)
+print('測試產品crawler')
 
 
 # In[ ]:
@@ -140,7 +140,6 @@ def get_all_category_product(category_title, category_url):
 
 
 category_list = crawl_category_list()
-print(category_list.loc[1])
 
 
 # In[ ]:
@@ -149,3 +148,5 @@ print(category_list.loc[1])
 for i in range(0,category):
     df_category_products = get_all_category_product(category_list.loc[i+1]['category'],category_list.loc[i+1]['url'])
     df_category_products.to_sql('yahoo_product', con=engine, if_exists='append', index=False)
+    print(category_list.loc[i+1]['category'])
+    print('-------------此類別爬取完畢---------------')
